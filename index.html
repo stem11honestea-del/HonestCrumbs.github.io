@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sweet Truths • Daily Inspiration</title>
+  <style>
+    :root{
+      --bg1:#ffecd2; --bg2:#fcb69f; --ink:#243043;
+      --card:#ffffffcc; --shadow:0 10px 30px rgba(0,0,0,.18)
+    }
+    * { box-sizing: border-box; }
+    html,body { height: 100%; }
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      display: grid; place-items: center;
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      color: var(--ink);
+      padding: 24px;
+    }
+    .card {
+      width: min(780px, 100%);
+      background: var(--card);
+      backdrop-filter: blur(4px);
+      padding: 28px 32px;
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      text-align: center;
+      animation: fade .7s ease both;
+    }
+    h1 { margin: 0 0 10px; font-size: clamp(22px, 3vw, 28px); }
+    #message { font-size: clamp(18px, 2.6vw, 26px); line-height: 1.55; }
+    .actions { margin-top: 16px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    button {
+      border: 0; border-radius: 12px; padding: 10px 16px; cursor: pointer; font-size: 15px;
+      background: #1976d2; color: #fff; box-shadow: var(--shadow);
+    }
+    button:hover { filter: brightness(.95); }
+    @keyframes fade { from { opacity:0; transform: translateY(8px)} to { opacity:1; transform: translateY(0)} }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>🌟 Sweet Truths</h1>
+    <div id="message">Loading…</div>
+    <div class="actions">
+      <button id="new">✨ New Inspiration</button>
+      <button id="copy" title="Copy to clipboard">📋 Copy</button>
+    </div>
+  </main>
+
+  <script>
+    // ↓ Replace this starter list with ALL your 400 plain-text lines.
+    // Make sure every line (except the last) ends with a comma.
+    const inspiration = [
+  "Keep showing up—the world needs your light.",
+  "Psalm 46:1 - God is our refuge and strength, an ever-present help in trouble.",
+  "Your consistency today is tomorrow’s success story.",
+  "Isaiah 41:10 - Fear not, for I am with you.",
+  "Don’t measure your progress against someone else’s finish line.",
+  "Romans 8:28 - In all things God works for the good of those who love Him.",
+  "Take pride in how far you’ve come, and have faith in how far you can go.",
+  "Philippians 4:13 - I can do all things through Christ who strengthens me.",
+  "Every stumble is proof you’re still moving forward.",
+  "Proverbs 3:5 - Trust in the Lord with all your heart.",
+  "Your kindness may be the miracle someone is praying for.",
+  "1 Peter 5:7 - Cast all your anxiety on Him because He cares for you.",
+  "Progress often feels like chaos before clarity.",
+  "Matthew 11:28 - Come to me, all who are weary and burdened, and I will give you rest.",
+  "You shine brighter when you embrace who you are.",
+  "Joshua 1:9 - Be strong and courageous. Do not be afraid.",
+  "Every act of love ripples farther than you imagine.",
+  "Romans 15:13 - May the God of hope fill you with all joy and peace.",
+  "Your best chapters are still being written.",
+  "Isaiah 40:31 - Those who hope in the Lord will renew their strength.",
+  "Be patient with yourself—growth takes time.",
+  "Psalm 27:1 - The Lord is my light and my salvation; whom shall I fear?",
+  "Your mistakes don’t define you—your comeback does.",
+  "John 14:27 - Peace I leave with you; my peace I give you.",
+  "Celebrate effort, not just results.",
+  "Romans 12:12 - Be joyful in hope, patient in affliction, faithful in prayer.",
+  "Be the friend you needed yesterday.",
+  "Psalm 37:4 - Delight yourself in the Lord, and He will give you the desires of your heart.",
+  "Every day you show up is proof of your strength.",
+  "Hebrews 13:5 - I will never leave you nor forsake you.",
+  "Don’t forget—you’ve already survived your hardest days.",
+  "Psalm 118:24 - This is the day the Lord has made; let us rejoice and be glad in it.",
+  "Kindness multiplies—it never runs out when you give it.",
+  "Matthew 5:14 - You are the light of the world.",
+  "Your courage sparks courage in others.",
+  "2 Corinthians 5:7 - For we walk by faith, not by sight.",
+  "Even the smallest seed of faith can move mountains.",
+  "Mark 9:23 - Everything is possible for one who believes.",
+  "You don’t need to be perfect to be impactful.",
+  "Romans 8:31 - If God is for us, who can be against us?",
+  "Your story might be the survival guide someone else needs.",
+  "Psalm 91:2 - He is my refuge and my fortress, my God in whom I trust.",
+  "Rest is part of the process, not a weakness.",
+  "Matthew 6:33 - Seek first His kingdom and His righteousness.",
+  "You have more strength inside you than you know.",
+  "Deuteronomy 31:6 - Be strong and courageous. The Lord goes with you.",
+  "One kind word can turn a whole day around.",
+  "Isaiah 26:3 - You will keep in perfect peace those whose minds are steadfast.",
+  "Your journey is unique—embrace it fully."
+  "Your voice matters—don’t be afraid to use it.",
+  "Psalm 34:8 - Taste and see that the Lord is good; blessed is the one who takes refuge in Him.",
+  "Start where you are, use what you have, do what you can.",
+  "Romans 5:3-4 - Suffering produces perseverance; perseverance, character; and character, hope.",
+  "Hope is the seed that grows into tomorrow’s victory.",
+  "Proverbs 18:10 - The name of the Lord is a strong tower; the righteous run to it and are safe.",
+  "Don’t compare your beginning to someone else’s middle.",
+  "2 Timothy 1:7 - For God has not given us a spirit of fear, but of power, love, and self-control.",
+  "Joy doesn’t come from what you have, but from what you give.",
+  "Psalm 100:5 - For the Lord is good and His love endures forever.",
+  "Your challenges build strength you don’t see yet.",
+  "Hebrews 11:1 - Faith is confidence in what we hope for and assurance about what we do not see.",
+  "Even small progress is worth celebrating.",
+  "Isaiah 43:2 - When you pass through the waters, I will be with you.",
+  "Your light may be exactly what someone needs today.",
+  "John 8:12 - I am the light of the world. Whoever follows me will never walk in darkness.",
+  "Every sunrise brings a chance to reset.",
+  "Psalm 121:1-2 - I lift up my eyes to the hills—where does my help come from? My help comes from the Lord, the Maker of heaven and earth.",
+  "Don’t quit—miracles often happen right after the struggle.",
+  "Galatians 6:9 - Let us not become weary in doing good, for at the proper time we will reap a harvest.",
+  "You are braver than you know.",
+  "Ephesians 2:10 - For we are God’s masterpiece, created in Christ Jesus to do good works.",
+  "Let gratitude turn what you have into enough.",
+  "Psalm 62:1 - Truly my soul finds rest in God; my salvation comes from Him.",
+  "Each setback is a setup for a comeback.",
+  "2 Corinthians 12:9 - My grace is sufficient for you, for My power is made perfect in weakness.",
+  "Choose faith over fear every time.",
+  "Matthew 19:26 - With man this is impossible, but with God all things are possible.",
+  "The best way to predict your future is to create it.",
+  "Jeremiah 17:7 - Blessed is the one who trusts in the Lord, whose confidence is in Him.",
+  "Your heart knows the way—listen closely.",
+  "Psalm 55:22 - Cast your cares on the Lord and He will sustain you.",
+  "Courage is contagious—share yours.",
+  "Micah 6:8 - Act justly, love mercy, and walk humbly with your God.",
+  "Don’t be afraid of failure—be afraid of never trying.",
+  "Colossians 3:23 - Whatever you do, work at it with all your heart, as working for the Lord.",
+  "Even in silence, your soul is growing.",
+  "Romans 10:17 - Faith comes from hearing, and hearing through the word of Christ.",
+  "Your life is someone else’s answered prayer.",
+  "1 Corinthians 16:14 - Let all that you do be done in love.",
+  "Mistakes are proof you’re learning.",
+  "James 1:5 - If any of you lacks wisdom, let him ask God, who gives generously to all.",
+  "Keep faith—the night always gives way to morning.",
+  "Lamentations 3:22-23 - His compassions never fail. They are new every morning.",
+  "Your dreams are valid—don’t shrink them.",
+  "John 16:33 - In this world you will have trouble. But take heart! I have overcome the world.",
+  "It’s not about being perfect—it’s about being real.",
+  "Psalm 9:9 - The Lord is a refuge for the oppressed, a stronghold in times of trouble.",
+  "You carry more strength than you realize.",
+  "Romans 15:5 - May the God who gives endurance and encouragement give you the same attitude of mind toward each other that Christ Jesus had."
+  "You are not behind—you are on your own timeline.",
+  "Psalm 37:23 - The Lord makes firm the steps of the one who delights in Him.",
+  "Don’t rush the process—beautiful things take time.",
+  "Proverbs 16:3 - Commit to the Lord whatever you do, and He will establish your plans.",
+  "Be proud of the small wins—they build the big ones.",
+  "Psalm 119:105 - Your word is a lamp to my feet and a light to my path.",
+  "Your faith can move mountains of doubt.",
+  "Mark 11:24 - Whatever you ask for in prayer, believe that you have received it, and it will be yours.",
+  "Kindness is never wasted.",
+  "Ephesians 6:10 - Be strong in the Lord and in His mighty power.",
+  "You can rise again after every fall.",
+  "Isaiah 54:10 - Though the mountains be shaken and the hills be removed, yet my unfailing love for you will not be shaken.",
+  "Breathe—this moment is a gift.",
+  "Romans 8:37 - In all these things we are more than conquerors through Him who loved us.",
+  "Let joy be your daily choice.",
+  "Psalm 20:4 - May He give you the desire of your heart and make all your plans succeed.",
+  "Your story matters—tell it with courage.",
+  "2 Thessalonians 3:3 - The Lord is faithful, and He will strengthen you and protect you.",
+  "Growth happens outside your comfort zone.",
+  "John 10:10 - I have come that they may have life, and have it to the full.",
+  "You are capable of creating change.",
+  "Proverbs 4:23 - Above all else, guard your heart, for everything you do flows from it.",
+  "Be patient—God’s timing is never late.",
+  "Ecclesiastes 3:1 - There is a time for everything, and a season for every activity under the heavens.",
+  "Your worth is not measured by productivity.",
+  "Matthew 22:37 - Love the Lord your God with all your heart and with all your soul and with all your mind.",
+  "Don’t let fear silence your dreams.",
+  "2 Corinthians 4:16 - Therefore we do not lose heart. Though outwardly we are wasting away, yet inwardly we are being renewed day by day.",
+  "Your value is not defined by other people’s opinions.",
+  "Psalm 91:11 - For He will command His angels concerning you to guard you in all your ways.",
+  "Every day you wake up is proof you still have a purpose.",
+  "Hebrews 10:23 - Let us hold unswervingly to the hope we profess, for He who promised is faithful.",
+  "Be grateful—you already have more than enough.",
+  "Matthew 28:20 - Surely I am with you always, to the very end of the age.",
+  "You are allowed to rest and still be worthy.",
+  "Psalm 100:4 - Enter His gates with thanksgiving and His courts with praise.",
+  "Even when unseen, your progress is real.",
+  "James 1:12 - Blessed is the one who perseveres under trial.",
+  "Dream boldly, but work quietly.",
+  "1 Thessalonians 5:16-18 - Rejoice always, pray continually, give thanks in all circumstances.",
+  "The more you give, the more you grow.",
+  "Proverbs 11:25 - A generous person will prosper; whoever refreshes others will be refreshed.",
+  "Light always shines brighter in darkness.",
+  "John 1:5 - The light shines in the darkness, and the darkness has not overcome it.",
+  "You are stronger than your fear.",
+  "Psalm 56:3 - When I am afraid, I put my trust in You.",
+  "Choose courage over comfort.",
+  "Deuteronomy 33:27 - The eternal God is your refuge, and underneath are the everlasting arms.",
+  "Be gentle with yourself—you’re doing your best."
+  "Your dreams are worth the effort.",
+  "Psalm 16:8 - I keep my eyes always on the Lord. With Him at my right hand, I will not be shaken.",
+  "Choose faith, even when the path is unclear.",
+  "Romans 12:2 - Do not conform to the pattern of this world, but be transformed by the renewing of your mind.",
+  "You are a masterpiece in progress.",
+  "Ephesians 3:20 - God is able to do immeasurably more than all we ask or imagine.",
+  "Hard times are the soil where strength grows.",
+  "Isaiah 40:29 - He gives strength to the weary and increases the power of the weak.",
+  "Keep your focus on what matters most.",
+  "Matthew 6:34 - Do not worry about tomorrow, for tomorrow will worry about itself.",
+  "Celebrate progress, not perfection.",
+  "Philippians 1:6 - He who began a good work in you will carry it on to completion.",
+  "You don’t need to have it all figured out to move forward.",
+  "Psalm 139:14 - I praise You because I am fearfully and wonderfully made.",
+  "Choose kindness even when it’s hard.",
+  "Romans 5:8 - God demonstrates His own love for us in this: While we were still sinners, Christ died for us.",
+  "Keep sowing—your harvest is coming.",
+  "Galatians 6:7 - A man reaps what he sows.",
+  "Your authenticity is your strength.",
+  "John 15:5 - I am the vine; you are the branches. If you remain in Me and I in you, you will bear much fruit.",
+  "Sometimes the smallest step changes your whole direction.",
+  "Proverbs 24:16 - For though the righteous fall seven times, they rise again.",
+  "Be still—the answers will come.",
+  "Exodus 14:14 - The Lord will fight for you; you need only to be still.",
+  "You are enough, right here, right now.",
+  "Isaiah 58:11 - The Lord will guide you always; He will satisfy your needs in a sun-scorched land.",
+  "Let love be your daily intention.",
+  "1 John 4:8 - Whoever does not love does not know God, because God is love.",
+  "Even in small beginnings, greatness is planted.",
+  "Zechariah 4:10 - Do not despise these small beginnings, for the Lord rejoices to see the work begin.",
+  "You are stronger than your doubts.",
+  "Psalm 34:17 - The righteous cry out, and the Lord hears them; He delivers them from all their troubles.",
+  "Happiness grows where gratitude is planted.",
+  "Colossians 2:7 - Be rooted and built up in Him, strengthened in the faith.",
+  "You are braver than you feel.",
+  "Joshua 24:15 - As for me and my household, we will serve the Lord.",
+  "Each day is a second chance.",
+  "2 Corinthians 4:18 - Fix our eyes not on what is seen, but on what is unseen.",
+  "Your kindness is contagious.",
+  "Matthew 5:7 - Blessed are the merciful, for they will be shown mercy.",
+  "Don’t wait for opportunity—create it.",
+  "Psalm 84:11 - The Lord bestows favor and honor; no good thing does He withhold.",
+  "Patience is power in disguise.",
+  "Romans 8:18 - Our present sufferings are not worth comparing with the glory that will be revealed in us.",
+  "Your faith plants seeds in others.",
+  "Hebrews 11:6 - Without faith it is impossible to please God.",
+  "Stay true to your values—they are your compass.",
+  "Proverbs 21:21 - Whoever pursues righteousness and love finds life, prosperity, and honor.",
+  "You’re not alone in this journey.",
+  "Deuteronomy 31:8 - The Lord Himself goes before you and will be with you."
+  "Your dreams matter—never shrink them for anyone.",
+  "Psalm 55:22 - Cast your cares on the Lord and He will sustain you.",
+  "Every sunrise is a fresh invitation to hope.",
+  "Romans 5:8 - God demonstrates His love for us in this: While we were still sinners, Christ died for us.",
+  "You’re stronger than yesterday, wiser than before.",
+  "Isaiah 43:2 - When you pass through the waters, I will be with you.",
+  "Joy often sneaks in through the smallest doors.",
+  "Proverbs 18:10 - The name of the Lord is a fortified tower; the righteous run to it and are safe.",
+  "Your smile could heal someone else’s heart today.",
+  "Matthew 19:26 - With God all things are possible.",
+  "Keep moving forward—the road will clear as you walk.",
+  "Psalm 119:105 - Your word is a lamp to my feet and a light to my path.",
+  "Every failure is just another step toward learning.",
+  "John 8:12 - I am the light of the world. Whoever follows me will never walk in darkness.",
+  "The way you love is the way you’ll be remembered.",
+  "Philippians 1:6 - He who began a good work in you will carry it on to completion.",
+  "Patience is quiet strength in action.",
+  "Psalm 34:8 - Taste and see that the Lord is good; blessed is the one who takes refuge in Him.",
+  "Small steps every day turn into great journeys.",
+  "Jeremiah 33:3 - Call to me and I will answer you.",
+  "Hope whispers louder than fear ever could.",
+  "Romans 10:9 - If you declare with your mouth, ‘Jesus is Lord,’ and believe in your heart… you will be saved.",
+  "Celebrate the little victories—they’re proof of momentum.",
+  "2 Corinthians 12:9 - My grace is sufficient for you, for my power is made perfect in weakness.",
+  "Your courage inspires someone you may never meet.",
+  "Psalm 121:1-2 - I lift up my eyes to the mountains—where does my help come from? My help comes from the Lord.",
+  "Never underestimate the power of starting small.",
+  "Hebrews 10:23 - Let us hold unswervingly to the hope we profess, for He who promised is faithful.",
+  "Your story isn’t over—it’s just beginning again.",
+  "John 14:6 - I am the way and the truth and the life.",
+  "Every day is another chance to love deeper.",
+  "Psalm 62:6 - Truly He is my rock and my salvation; I will not be shaken.",
+  "Growth takes time—don’t rush the blooming.",
+  "Romans 15:5 - May the God who gives endurance and encouragement give you the same attitude of mind.",
+  "You are more capable than your doubts suggest.",
+  "Isaiah 54:10 - Though the mountains be shaken… my unfailing love for you will not be shaken.",
+  "Keep planting seeds—you never know which will bloom.",
+  "Psalm 23:1 - The Lord is my shepherd; I lack nothing.",
+  "Even in stillness, you are becoming stronger.",
+  "1 Thessalonians 5:11 - Encourage one another and build each other up.",
+  "The world needs your honesty and your hope.",
+  "Matthew 22:37 - Love the Lord your God with all your heart and with all your soul.",
+  "Every act of kindness is a legacy of light.",
+  "Proverbs 16:3 - Commit to the Lord whatever you do, and He will establish your plans.",
+  "Let faith carry you where fear tries to block.",
+  "Joshua 24:15 - As for me and my household, we will serve the Lord.",
+  "You are worthy of the dreams you hold inside.",
+  "Psalm 139:14 - I praise you because I am fearfully and wonderfully made.",
+  "The darkest nights often birth the brightest stars.",
+  "John 16:33 - In this world you will have trouble. But take heart! I have overcome the world."
+];
+
+    const $msg = document.getElementById('message');
+    const $new = document.getElementById('new');
+    const $copy = document.getElementById('copy');
+
+    function showRandom(){
+      if (!inspiration.length) { $msg.textContent = 'No messages loaded.'; return; }
+      const i = Math.floor(Math.random() * inspiration.length);
+      $msg.textContent = inspiration[i];
+    }
+
+    $new.addEventListener('click', showRandom);
+    $copy.addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText($msg.textContent); $copy.textContent = '✅ Copied!'; setTimeout(()=> $copy.textContent='📋 Copy', 1200);} catch(e){ alert('Copy failed.'); }
+    });
+
+    // Show one on load
+    document.addEventListener('DOMContentLoaded', showRandom);
+  </script>
+</body>
+</html>
